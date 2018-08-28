@@ -103,4 +103,64 @@ contract Example {
         assert(verify(mail, v, r, s));
         return true;
     }
+
+    function dataSignStructToBytes(Mail u) private
+    returns (bytes data)
+    {
+        // _size = "sizeof" u.id + "sizeof" u.name
+        uint _size = 4 + bytes(u.name).length;
+        bytes memory _data = new bytes(_size);
+
+        uint counter=0;
+        for (uint i=0;i<4;i++)
+        {
+            _data[counter]=byte(u.id>>(8*i)&uint32(255));
+            counter++;
+        }
+
+        for (i=0;i<bytes(u.name).length;i++)
+        {
+            _data[counter]=bytes(u.name)[i];
+            counter++;
+        }
+
+        return (_data);
+    }
+
+
+    function dataSignStructFromBytes(bytes data) private
+    returns (Mail u)
+    {
+        for (uint i=0;i<4;i++)
+        {
+            uint32 temp = uint32(data[i]);
+            temp<<=8*i;
+            u.id^=temp;
+        }
+
+        bytes memory str = new bytes(data.length-4);
+
+        for (i=0;i<data.length-4;i++)
+        {
+            str[i]=data[i+4];
+        }
+
+        u.name=string(str);
+     }
+
+    function testSerialization()
+    {
+        //Create and  show struct
+        Mail memory struct_1=Mail(1234567,"abcdef");
+        showStruct(struct_1);
+
+        //Serializing struct
+        bytes memory serialized_struct_1 = dataSignStructToBytes(struct_1);
+
+        //Deserializing struct
+        Mail memory struct_2 = dataSignStructFromBytes(serialized_struct_1);
+
+        //Show deserealized struct
+        showStruct(struct_2);
+    }
 }
