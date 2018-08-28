@@ -1,6 +1,19 @@
 const test = require('tape')
 const sigUtil = require('../')
 const ethUtil = require('ethereumjs-util')
+const Ganache = require('ganache-core')
+const fs = require('fs')
+const denodeify = require('denodeify')
+const readFile = denodeify(fs.readFile)
+const path = require('path')
+const solc = require('solc')
+const EthContract = require('ethjs-contract')
+const Eth = require('ethjs-query')
+
+
+const testSol = fs.readFileSync(path.join(__dirname, 'TypedData.sol')).toString()
+const compiled = solc.compile(testSol, 1)
+const Deployer = compiled.contracts[':Example']
 
 const typedData = {
   types: {
@@ -332,3 +345,46 @@ test('signedTypeData', (t) => {
   t.equal(ethUtil.bufferToHex(address), '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826')
   t.equal(sig, '0x4355c47d63924e8a72e509b65029052eb6c299d53a04e167c5775fd466751c9d07299936d304c153f6443dfa05f40ff007d72911b6f72307f996231605b915621c')
 })
+
+test('verify signTypedData on chain', async (t) => {
+  const account = {
+    address: '0xc3a23e1bacee6f14e8d3fec56d20c5217d166147',
+    secretKey: '0x545f0a4ba6fe8b163fc567e50446cbf5dfaf8ef37a33b76041cba8c9826ac129',
+    balance: '0x56bc75e2d63100000', // 100 ether
+  }
+
+  const provider = Ganache.provider({
+    accounts: [ account ],
+  })
+
+  const eth = new Eth(provider)
+  const contract = EthContract(eth)
+  const abi = JSON.parse(Deployer.interface)
+
+  const Example = contract(abi, Deployer.bytecode, {
+    from: account.address,
+    gas: '3000000',
+    gasPrice: '30000',
+  })
+
+  const exampleHash = await Example.new()
+  await wait(100) // Ensure the transaction is mined.
+  const receipt = await eth.getTransactionReceipt(exampleHash)
+  const addr = receipt.contractAddress
+  const example = Example.at(addr)
+  console.dir(example)
+
+  const sig = sigUtil.signTypedData(privateKey, { data: typedData })
+
+  t.ok(true)
+
+  // TODO: Submit our client-side signature in a way that the smart
+  // contract is able to decode, verify, & read from.
+
+  t.end()
+})
+
+async function wait (ms) {
+  return new Promise(res => setTimeout(res, ms))
+}
+

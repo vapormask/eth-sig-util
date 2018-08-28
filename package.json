@@ -25,6 +25,11 @@
     "ethereumjs-util": "^5.1.1"
   },
   "devDependencies": {
+    "denodeify": "^1.2.1",
+    "ethjs-contract": "^0.2.3",
+    "ethjs-query": "^0.3.8",
+    "ganache-core": "^2.2.1",
+    "solc": "^0.4.24",
     "tape": "^4.9.1"
   }
 }
