@@ -1,30 +1,30 @@
 {
-  "name": "eth-sig-util",
+  "name": "vap-sig-util",
   "version": "2.1.0",
-  "description": "A few useful functions for signing ethereum data",
+  "description": "A few useful functions for signing vapory data",
   "main": "index.js",
   "scripts": {
     "test": "node test/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/MetaMask/eth-sig-util.git"
+    "url": "git+ssh://git@github.com/vapormask/vap-sig-util.git"
   },
   "keywords": [
-    "ethereum",
+    "vapory",
     "signature"
   ],
   "author": "Dan Finlay",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MetaMask/eth-sig-util/issues"
+    "url": "https://github.com/vapormask/vap-sig-util/issues"
   },
-  "homepage": "https://github.com/MetaMask/eth-sig-util#readme",
+  "homepage": "https://github.com/vapormask/vap-sig-util#readme",
   "dependencies": {
     "buffer": "^5.2.1",
     "elliptic": "^6.4.0",
-    "ethereumjs-abi": "0.6.5",
-    "ethereumjs-util": "^5.1.1",
+    "vaporyjs-abi": "0.6.5",
+    "vaporyjs-util": "^5.1.1",
     "tweetnacl": "^1.0.0",
     "tweetnacl-util": "^0.15.0"
   },
