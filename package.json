@@ -1,5 +1,6 @@
 {
   "name": "vap-sig-util",
+  "namespace": "vappormask",
   "version": "2.1.0",
   "description": "A few useful functions for signing vapory data",
   "main": "index.js",
@@ -23,8 +24,8 @@
   "dependencies": {
     "buffer": "^5.2.1",
     "elliptic": "^6.4.0",
-    "vaporyjs-abi": "0.6.5",
-    "vaporyjs-util": "^5.1.1",
+    "vaporyjs-abi": "0.6.6",
+    "vaporyjs-util": "^5.1.5",
     "tweetnacl": "^1.0.0",
     "tweetnacl-util": "^0.15.0"
   },
