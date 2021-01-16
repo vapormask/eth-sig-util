@@ -23,7 +23,7 @@
   "homepage": "https://github.com/vapormask/vap-sig-util#readme",
   "dependencies": {
     "buffer": "^5.2.1",
-    "elliptic": "^6.4.0",
+    "elliptic": "^6.5.3",
     "vaporyjs-abi": "0.6.6",
     "vaporyjs-util": "^5.1.5",
     "tweetnacl": "^1.0.0",
