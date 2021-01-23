@@ -1,47 +1,47 @@
-const ethUtil = require('ethereumjs-util')
-const ethAbi = require('ethereumjs-abi')
+const vapUtil = require('vaporyjs-util')
+const vapAbi = require('vaporyjs-abi')
 
 module.exports = {
 
   concatSig: function (v, r, s) {
-    const rSig = ethUtil.fromSigned(r)
-    const sSig = ethUtil.fromSigned(s)
-    const vSig = ethUtil.bufferToInt(v)
-    const rStr = padWithZeroes(ethUtil.toUnsigned(rSig).toString('hex'), 64)
-    const sStr = padWithZeroes(ethUtil.toUnsigned(sSig).toString('hex'), 64)
-    const vStr = ethUtil.stripHexPrefix(ethUtil.intToHex(vSig))
-    return ethUtil.addHexPrefix(rStr.concat(sStr, vStr)).toString('hex')
+    const rSig = vapUtil.fromSigned(r)
+    const sSig = vapUtil.fromSigned(s)
+    const vSig = vapUtil.bufferToInt(v)
+    const rStr = padWithZeroes(vapUtil.toUnsigned(rSig).toString('hex'), 64)
+    const sStr = padWithZeroes(vapUtil.toUnsigned(sSig).toString('hex'), 64)
+    const vStr = vapUtil.stripHexPrefix(vapUtil.intToHex(vSig))
+    return vapUtil.addHexPrefix(rStr.concat(sStr, vStr)).toString('hex')
   },
 
   normalize: function (input) {
     if (!input) return
 
     if (typeof input === 'number') {
-      const buffer = ethUtil.toBuffer(input)
-      input = ethUtil.bufferToHex(buffer)
+      const buffer = vapUtil.toBuffer(input)
+      input = vapUtil.bufferToHex(buffer)
     }
 
     if (typeof input !== 'string') {
-      var msg = 'eth-sig-util.normalize() requires hex string or integer input.'
+      var msg = 'vap-sig-util.normalize() requires hex string or integer input.'
       msg += ' received ' + (typeof input) + ': ' + input
       throw new Error(msg)
     }
 
-    return ethUtil.addHexPrefix(input.toLowerCase())
+    return vapUtil.addHexPrefix(input.toLowerCase())
   },
 
   personalSign: function (privateKey, msgParams) {
-    var message = ethUtil.toBuffer(msgParams.data)
-    var msgHash = ethUtil.hashPersonalMessage(message)
-    var sig = ethUtil.ecsign(msgHash, privateKey)
-    var serialized = ethUtil.bufferToHex(this.concatSig(sig.v, sig.r, sig.s))
+    var message = vapUtil.toBuffer(msgParams.data)
+    var msgHash = vapUtil.hashPersonalMessage(message)
+    var sig = vapUtil.ecsign(msgHash, privateKey)
+    var serialized = vapUtil.bufferToHex(this.concatSig(sig.v, sig.r, sig.s))
     return serialized
   },
 
   recoverPersonalSignature: function (msgParams) {
     const publicKey = getPublicKeyFor(msgParams)
-    const sender = ethUtil.publicToAddress(publicKey)
-    const senderHex = ethUtil.bufferToHex(sender)
+    const sender = vapUtil.publicToAddress(publicKey)
+    const senderHex = vapUtil.bufferToHex(sender)
     return senderHex
   },
 
@@ -52,20 +52,20 @@ module.exports = {
 
   typedSignatureHash: function (typedData) {
     const hashBuffer = typedSignatureHash(typedData)
-    return ethUtil.bufferToHex(hashBuffer)
+    return vapUtil.bufferToHex(hashBuffer)
   },
 
   signTypedData: function (privateKey, msgParams) {
     const msgHash = typedSignatureHash(msgParams.data)
-    const sig = ethUtil.ecsign(msgHash, privateKey)
-    return ethUtil.bufferToHex(this.concatSig(sig.v, sig.r, sig.s))
+    const sig = vapUtil.ecsign(msgHash, privateKey)
+    return vapUtil.bufferToHex(this.concatSig(sig.v, sig.r, sig.s))
   },
 
   recoverTypedSignature: function (msgParams) {
     const msgHash = typedSignatureHash(msgParams.data)
     const publicKey = recoverPublicKey(msgHash, msgParams.sig)
-    const sender = ethUtil.publicToAddress(publicKey)
-    return ethUtil.bufferToHex(sender)
+    const sender = vapUtil.publicToAddress(publicKey)
+    return vapUtil.bufferToHex(sender)
   }
 
 }
@@ -79,7 +79,7 @@ function typedSignatureHash(typedData) {
   if (typeof typedData !== 'object' || !typedData.length) throw error
 
   const data = typedData.map(function (e) {
-    return e.type === 'bytes' ? ethUtil.toBuffer(e.value) : e.value
+    return e.type === 'bytes' ? vapUtil.toBuffer(e.value) : e.value
   })
   const types = typedData.map(function (e) { return e.type })
   const schema = typedData.map(function (e) {
@@ -87,24 +87,24 @@ function typedSignatureHash(typedData) {
     return e.type + ' ' + e.name
   })
 
-  return ethAbi.soliditySHA3(
+  return vapAbi.soliditySHA3(
     ['bytes32', 'bytes32'],
     [
-      ethAbi.soliditySHA3(new Array(typedData.length).fill('string'), schema),
-      ethAbi.soliditySHA3(types, data)
+      vapAbi.soliditySHA3(new Array(typedData.length).fill('string'), schema),
+      vapAbi.soliditySHA3(types, data)
     ]
   )
 }
 
 function recoverPublicKey(hash, sig) {
-  const signature = ethUtil.toBuffer(sig)
-  const sigParams = ethUtil.fromRpcSig(signature)
-  return ethUtil.ecrecover(hash, sigParams.v, sigParams.r, sigParams.s)
+  const signature = vapUtil.toBuffer(sig)
+  const sigParams = vapUtil.fromRpcSig(signature)
+  return vapUtil.ecrecover(hash, sigParams.v, sigParams.r, sigParams.s)
 }
 
 function getPublicKeyFor (msgParams) {
-  const message = ethUtil.toBuffer(msgParams.data)
-  const msgHash = ethUtil.hashPersonalMessage(message)
+  const message = vapUtil.toBuffer(msgParams.data)
+  const msgHash = vapUtil.hashPersonalMessage(message)
   return recoverPublicKey(msgHash, msgParams.sig)
 }
 
