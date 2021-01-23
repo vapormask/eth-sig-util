@@ -1,22 +1,22 @@
-# Eth-Sig-Util [![CircleCI](https://circleci.com/gh/MetaMask/eth-sig-util.svg?style=svg)](https://circleci.com/gh/MetaMask/eth-sig-util)
+# Vap-Sig-Util [![CircleCI](https://circleci.com/gh/Vapormask/vap-sig-util.svg?style=svg)](https://circleci.com/gh/Vapormask/vap-sig-util)
 
-A small collection of ethereum signing functions.
+A small collection of vapory signing functions.
 
-You can find usage examples [here](https://github.com/flyswatter/js-eth-personal-sign-examples) 
+You can find usage examples [here](https://github.com/vapormask/js-vap-personal-sign-examples) 
 
-[Available on NPM](https://www.npmjs.com/package/eth-sig-util)
+[Available on NPM](https://www.npmjs.com/package/vap-sig-util)
 
 ## Supported Signing Methods
 
 Currently there is only one supported signing protocol. More will be added as standardized. 
 
-- Personal Sign (`personal_sign`) [geth thread](https://github.com/ethereum/go-ethereum/pull/2940)
+- Personal Sign (`personal_sign`) [gvap thread](https://github.com/vaporyco/go-vapory/pull/2940)
 
 
 ## Installation
 
 ```
-npm install eth-sig-util --save
+npm install vap-sig-util --save
 ```
 
 ## Methods
@@ -29,13 +29,13 @@ Returns a continuous, hex-prefixed hex value for the signature, suitable for inc
 
 ### normalize(address)
 
-Takes an address of either upper or lower case, with or without a hex prefix, and returns an all-lowercase, hex-prefixed address, suitable for submitting to an ethereum provider.
+Takes an address of either upper or lower case, with or without a hex prefix, and returns an all-lowercase, hex-prefixed address, suitable for submitting to an vapory provider.
 
 ### personalSign (privateKeyBuffer, msgParams)
 
 msgParams should have a `data` key that is hex-encoded data to sign.
 
-Returns the prefixed signature expected for calls to `eth.personalSign`.
+Returns the prefixed signature expected for calls to `vap.personalSign`.
 
 ### recoverPersonalSignature (msgParams)
 
@@ -45,7 +45,7 @@ Returns a hex-encoded sender address.
 
 ### signTypedData (privateKeyBuffer, msgParams)
 
-Signs typed data as per [EIP712](https://github.com/ethereum/EIPs/pull/712).
+Signs typed data as per [EIP712](https://github.com/vaporyco/VIPs/pull/712).
 
 Data should be under `data` key of `msgParams`. The method returns prefixed signature.
 

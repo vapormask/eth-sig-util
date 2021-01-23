@@ -117,7 +117,7 @@ test('signTypedData and recoverTypedSignature - multiple messages', function (t)
 })
 
 // personal_sign was declared without an explicit set of test data
-// so I made a script out of geth's internals to create this test data
+// so I made a script out of gvap's internals to create this test data
 // https://gist.github.com/kumavis/461d2c0e9a04ea0818e423bb77e3d260
 
 signatureTest({
